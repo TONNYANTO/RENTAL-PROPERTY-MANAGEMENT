@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ST. LOISE - Property Management</title>
-  <!-- Firebase SDKs -->
+  <title>RentEase - Property Management</title>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js "></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js "></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js "></script>
@@ -108,11 +107,6 @@
 </head>
 <body>
 
-<header>
-  <h1>ST. LOISE</h1>
-  <p>ST. LOISE Property Management System</p>
-</header>
-
 <!-- Login Form -->
 <div id="loginForm" class="container" style="display:none;">
   <h2>Admin Login</h2>
@@ -125,128 +119,124 @@
 
 <!-- Main App -->
 <div id="app" style="display:none;">
-  <div class="container">
-
-    <!-- Dashboard -->
-    <section>
-      <h2>Dashboard</h2>
-      <div class="grid">
-        <div class="card">
-          <h3>Total Units</h3>
-          <p id="totalUnits">17</p>
-        </div>
-        <div class="card">
-          <h3>Occupied</h3>
-          <p id="occupiedUnits">0</p>
-        </div>
-        <div class="card">
-          <h3>Vacant</h3>
-          <p id="vacantUnits">17</p>
-        </div>
-        <div class="card">
-          <h3>Monthly Income</h3>
-          <p id="monthlyIncome">Ksh 0.00</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Add Tenant -->
-    <section style="margin-top: 2rem;">
-      <h2>Add New Tenant</h2>
+  <!-- Dashboard -->
+  <section>
+    <h2>Dashboard</h2>
+    <div class="grid">
       <div class="card">
-        <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" id="fullName" placeholder="John Doe"/>
-        </div>
-        <div class="form-group">
-          <label>ID Number</label>
-          <input type="text" id="idNumber" placeholder="12345678"/>
-        </div>
-        <div class="form-group">
-          <label>Phone</label>
-          <input type="tel" id="phone" placeholder="0712345678"/>
-        </div>
-        <div class="form-group">
-          <label>Email (Optional)</label>
-          <input type="email" id="email" placeholder="john@example.com"/>
-        </div>
-        <div class="form-group">
-          <label>Unit</label>
-          <select id="unitIndex"></select>
-        </div>
-        <button onclick="addTenant()">Save Tenant</button>
+        <h3>Total Units</h3>
+        <p id="totalUnits">17</p>
       </div>
-    </section>
-
-    <!-- Record Payment -->
-    <section style="margin-top: 2rem;">
-      <h2>Record Payment</h2>
       <div class="card">
-        <div class="form-group">
-          <label>Tenant</label>
-          <select id="tenantId"></select>
-        </div>
-        <div class="form-group">
-          <label>Amount</label>
-          <input type="number" id="amount" placeholder="5500"/>
-        </div>
-        <div class="form-group">
-          <label>Date Paid</label>
-          <input type="date" id="paymentDate" value="${new Date().toISOString().split('T')[0]}"/>
-        </div>
-        <div class="form-group">
-          <label>Month Covered</label>
-          <input type="month" id="monthPaidFor" value="${new Date().toISOString().slice(0, 7)}"/>
-        </div>
-        <div class="form-group">
-          <label>Mode of Payment</label>
-          <select id="modeOfPayment">
-            <option>Cash</option>
-            <option>M-Pesa</option>
-            <option>Bank Transfer</option>
-          </select>
-        </div>
-        <button onclick="recordPayment()">Record Payment</button>
+        <h3>Occupied</h3>
+        <p id="occupiedUnits">0</p>
       </div>
-    </section>
-
-    <!-- Payments Table -->
-    <section style="margin-top: 2rem;">
-      <h2>Recent Payments</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Tenant</th>
-            <th>Amount</th>
-            <th>Date</th>
-            <th>Month</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="paymentsTable"></tbody>
-      </table>
-    </section>
-
-    <!-- Tenants List -->
-    <section style="margin-top: 2rem;">
-      <h2>All Tenants</h2>
-      <ul id="tenantList" class="tenant-list"></ul>
-    </section>
-
-    <!-- Logout Button -->
-    <div style="text-align:right; margin-top: 1rem;">
-      <button onclick="logout()" style="background:#9ca3af;">Logout</button>
+      <div class="card">
+        <h3>Vacant</h3>
+        <p id="vacantUnits">17</p>
+      </div>
+      <div class="card">
+        <h3>Monthly Income</h3>
+        <p id="monthlyIncome">Ksh 0.00</p>
+      </div>
     </div>
+  </section>
 
+  <!-- Add Tenant -->
+  <section style="margin-top: 2rem;">
+    <h2>Add New Tenant</h2>
+    <div class="card">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="fullName" placeholder="John Doe"/>
+      </div>
+      <div class="form-group">
+        <label>ID Number</label>
+        <input type="text" id="idNumber" placeholder="12345678"/>
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="tel" id="phone" placeholder="0712345678"/>
+      </div>
+      <div class="form-group">
+        <label>Email (Optional)</label>
+        <input type="email" id="email" placeholder="john@example.com"/>
+      </div>
+      <div class="form-group">
+        <label>Unit</label>
+        <select id="unitIndex"></select>
+      </div>
+      <button onclick="addTenant()">Save Tenant</button>
+    </div>
+  </section>
+
+  <!-- Record Payment -->
+  <section style="margin-top: 2rem;">
+    <h2>Record Payment</h2>
+    <div class="card">
+      <div class="form-group">
+        <label>Tenant</label>
+        <select id="tenantId"></select>
+      </div>
+      <div class="form-group">
+        <label>Amount</label>
+        <input type="number" id="amount" placeholder="5500"/>
+      </div>
+      <div class="form-group">
+        <label>Date Paid</label>
+        <input type="date" id="paymentDate" value="${new Date().toISOString().split('T')[0]}"/>
+      </div>
+      <div class="form-group">
+        <label>Month Covered</label>
+        <input type="month" id="monthPaidFor" value="${new Date().toISOString().slice(0, 7)}"/>
+      </div>
+      <div class="form-group">
+        <label>Mode of Payment</label>
+        <select id="modeOfPayment">
+          <option>Cash</option>
+          <option>M-Pesa</option>
+          <option>Bank Transfer</option>
+        </select>
+      </div>
+      <button onclick="recordPayment()">Record Payment</button>
+    </div>
+  </section>
+
+  <!-- Payments Table -->
+  <section style="margin-top: 2rem;">
+    <h2>Recent Payments</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Tenant</th>
+          <th>Amount</th>
+          <th>Date</th>
+          <th>Month</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="paymentsTable"></tbody>
+    </table>
+  </section>
+
+  <!-- Tenants List -->
+  <section style="margin-top: 2rem;">
+    <h2>All Tenants</h2>
+    <ul id="tenantList" class="tenant-list"></ul>
+  </section>
+
+  <!-- Logout Button -->
+  <div style="text-align:right; margin-top: 1rem;">
+    <button onclick="logout()" style="background:#9ca3af;">Logout</button>
   </div>
 </div>
 
 <footer>
-  ST. LOISE Property Management App • © <span id="year"></span>
+  RentEase Property Management App • © <span id="year"></span>
 </footer>
 
 <script>
-  // Initialize Firebase
+  // Initialize Firebase with your config
   const firebaseConfig = {
     apiKey: "AIzaSyBEXl6GKDmnAg1FbiaKwP1UgiXz2gFTC3w",
     authDomain: "st-loise-rental.firebaseapp.com",
@@ -286,8 +276,7 @@
     auth.signOut();
   }
 
-  let tenants = [];
-  let payments = [];
+  let tenants = [], payments = [];
 
   const units = Array.from({ length: 17 }, (_, i) => ({
     index: i,
@@ -295,11 +284,45 @@
     rent: i < 10 ? 5500 : 6500
   }));
 
+  function loadData() {
+    db.collection("tenants").onSnapshot(snapshot => {
+      tenants = [];
+      snapshot.forEach(doc => tenants.push({ id: doc.id, ...doc.data() }));
+      renderTenants();
+      updateDashboard();
+      populateUnitDropdown();
+    });
+
+    db.collection("payments").onSnapshot(snapshot => {
+      payments = [];
+      snapshot.forEach(doc => payments.push({ id: doc.id, ...doc.data() }));
+      renderPayments();
+      updateDashboard();
+    });
+  }
+
+  function saveTenant(tenant) {
+    db.collection("tenants").doc(tenant.id.toString()).set(tenant);
+  }
+
+  function savePayment(payment) {
+    db.collection("payments").doc(payment.id.toString()).set(payment);
+  }
+
+  function removeTenantFromDB(id) {
+    db.collection("tenants").doc(id.toString()).delete();
+    db.collection("payments").where("tenantId", "==", parseInt(id)).get()
+      .then(snapshot => {
+        snapshot.forEach(doc => doc.ref.delete());
+      });
+  }
+
   function updateDashboard() {
     document.getElementById('totalUnits').innerText = units.length;
     const occupied = tenants.length;
     document.getElementById('occupiedUnits').innerText = occupied;
     document.getElementById('vacantUnits').innerText = units.length - occupied;
+
     const totalIncome = payments.reduce((sum, p) => sum + parseFloat(p.amount), 0);
     document.getElementById('monthlyIncome').innerText = `Ksh ${totalIncome.toFixed(2)}`;
   }
@@ -369,39 +392,6 @@
     });
   }
 
-  function loadData() {
-    db.collection("tenants").onSnapshot(snapshot => {
-      tenants = [];
-      snapshot.forEach(doc => tenants.push({ id: doc.id, ...doc.data() }));
-      renderTenants();
-      updateDashboard();
-      populateTenantDropdown();
-    });
-
-    db.collection("payments").onSnapshot(snapshot => {
-      payments = [];
-      snapshot.forEach(doc => payments.push({ id: doc.id, ...doc.data() }));
-      renderPayments();
-      updateDashboard();
-    });
-  }
-
-  function saveTenant(tenant) {
-    db.collection("tenants").doc(tenant.id.toString()).set(tenant);
-  }
-
-  function savePayment(payment) {
-    db.collection("payments").doc(payment.id.toString()).set(payment);
-  }
-
-  function removeTenantFromDB(id) {
-    db.collection("tenants").doc(id).delete();
-    db.collection("payments").where("tenantId", "==", parseInt(id)).get()
-      .then(snapshot => {
-        snapshot.forEach(doc => doc.ref.delete());
-      });
-  }
-
   function addTenant() {
     const fullName = document.getElementById('fullName').value.trim();
     const idNumber = document.getElementById('idNumber').value.trim();
@@ -409,10 +399,7 @@
     const email = document.getElementById('email').value.trim();
     const unitIndex = parseInt(document.getElementById('unitIndex').value);
 
-    if (!fullName || !idNumber || !phone || isNaN(unitIndex)) {
-      alert("Please fill all required fields.");
-      return;
-    }
+    if (!fullName || !idNumber || !phone || isNaN(unitIndex)) return alert("Please fill all required fields.");
 
     const newTenant = {
       id: Date.now().toString(),
@@ -434,10 +421,7 @@
     const monthPaidFor = document.getElementById('monthPaidFor').value;
     const modeOfPayment = document.getElementById('modeOfPayment').value;
 
-    if (!tenantId || !amount) {
-      alert("Please select a tenant and enter an amount.");
-      return;
-    }
+    if (!tenantId || !amount) return alert("Please select tenant and enter amount.");
 
     const newPayment = {
       id: Date.now().toString(),
@@ -475,7 +459,7 @@
     const tenant = tenants.find(t => t.id === payment.tenantId);
 
     doc.setFontSize(16);
-    doc.text("ST. LOISE", 20, 20);
+    doc.text("RentEase", 20, 20);
     doc.setFontSize(12);
     doc.text("Official Rent Receipt", 20, 30);
     doc.line(20, 35, 190, 35);
@@ -493,7 +477,7 @@
 
     doc.setFontSize(10);
     doc.setTextColor(150);
-    doc.text("Generated by ST. LOISE Property Management", 20, y);
+    doc.text("Generated by RentEase Property Management", 20, y);
 
     doc.save(`receipt_${tenant?.fullName}.pdf`);
   }
@@ -506,24 +490,6 @@
 
   // Initial setup
   document.getElementById('year').innerText = new Date().getFullYear();
-
-  // Update dashboard and dropdowns on load
-  function initializeApp() {
-    updateDashboard();
-    populateUnitDropdown();
-    populateTenantDropdown();
-  }
-
-  window.addTenant = addTenant;
-  window.recordPayment = recordPayment;
-  window.generateReceipt = generateReceipt;
-  window.removeTenant = removeTenant;
-  window.login = login;
-  window.logout = logout;
-  window.onload = () => {
-    initializeApp();
-    loadData();
-  };
 </script>
 
 </body>
