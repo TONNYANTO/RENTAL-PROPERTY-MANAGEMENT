@@ -356,7 +356,7 @@
     const tbody = document.getElementById('paymentsTable');
     tbody.innerHTML = '';
     payments.forEach(payment => {
-      const tenant = tenants.find(t => t.id === payment.tenantId);
+      const tenant = tenants.find(t => t.id === payment.tenantId.toString());
       tbody.innerHTML += `
         <tr>
           <td>${tenant?.fullName}</td>
@@ -368,7 +368,6 @@
       `;
     });
   }
-
   function loadData() {
     db.collection("tenants").onSnapshot(snapshot => {
       tenants = [];
