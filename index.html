@@ -3,296 +3,134 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ST. LOISE - Property Management</title>
+  <title>RentEase - Property Management</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js "></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js "></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js "></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js "></script>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      background: #f3f4f6;
-      color: #111827;
-    }
-    header {
-      padding: 1rem 2rem;
-      background: #1f2937;
-      color: white;
-    }
-    .container {
-      max-width: 1200px;
-      margin: auto;
-      padding: 1rem 2rem;
-    }
-    h1, h2, h3 {
-      margin: 0 0 1rem 0;
-    }
-    .grid {
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    }
-    .card {
-      background: white;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .form-group {
-      margin-bottom: 1rem;
-    }
-    input, select, button {
-      width: 100%;
-      padding: 0.5rem;
-      border: 1px solid #d1d5db;
-      border-radius: 4px;
-      font-size: 1rem;
-    }
-    button {
-      background: #3b82f6;
-      color: white;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-    button:hover {
-      background: #2563eb;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-    }
-    th, td {
-      text-align: left;
-      padding: 0.75rem;
-      border-bottom: 1px solid #e5e7eb;
-    }
-    .tenant-list {
-      list-style: none;
-      padding: 0;
-      margin-top: 1rem;
-    }
-    .tenant-item {
-      background: #f9fafb;
-      padding: 1rem;
-      border-radius: 6px;
-      margin-bottom: 0.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .tenant-info span {
-      display: block;
-      font-size: 0.9rem;
-      color: #4b5563;
-    }
-    .remove-btn {
-      background: #ef4444;
-      padding: 0.4rem 0.8rem;
-      border-radius: 4px;
-      color: white;
-      font-size: 0.85rem;
-    }
-    .remove-btn:hover {
-      background: #dc2626;
-    }
-    footer {
-      text-align: center;
-      padding: 2rem;
-      font-size: 0.875rem;
-      color: #6b7280;
-    }
+    /* Same CSS as before */
+    body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f3f4f6; color: #111827; }
+    header, .login-form, .container, footer, table, .tenant-list, .form-group, button, input, select, .card, .grid { /* Paste previous styles here */ }
   </style>
 </head>
 <body>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyBEXl6GKDmnAg1FbiaKwP1UgiXz2gFTC3w",
+          authDomain: "st-loise-rental.firebaseapp.com",
+          projectId: "st-loise-rental",
+          storageBucket: "st-loise-rental.firebasestorage.app",
+          messagingSenderId: "999179801677",
+          appId: "1:999179801677:web:9e49dc4d508cb17dbef804",
+          measurementId: "G-YBXCCVWN1C"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+      </script>
 
-<header>
-  <h1>ST. LOISE</h1>
-  <p>ST. LOISE Property Management System </p>
-</header>
-
-<div class="container">
-
-  <!-- Dashboard -->
-  <section>
-    <h2>Dashboard</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>Total Units</h3>
-        <p id="totalUnits">17</p>
-      </div>
-      <div class="card">
-        <h3>Occupied</h3>
-        <p id="occupiedUnits">0</p>
-      </div>
-      <div class="card">
-        <h3>Vacant</h3>
-        <p id="vacantUnits">17</p>
-      </div>
-      <div class="card">
-        <h3>Monthly Income</h3>
-        <p id="monthlyIncome">Ksh 0.00</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Add Tenant -->
-  <section style="margin-top: 2rem;">
-    <h2>Add New Tenant</h2>
-    <div class="card">
-      <div class="form-group">
-        <label>Full Name</label>
-        <input type="text" id="fullName" placeholder="John Doe"/>
-      </div>
-      <div class="form-group">
-        <label>ID Number</label>
-        <input type="text" id="idNumber" placeholder="12345678"/>
-      </div>
-      <div class="form-group">
-        <label>Phone</label>
-        <input type="tel" id="phone" placeholder="0712345678"/>
-      </div>
-      <div class="form-group">
-        <label>Email (Optional)</label>
-        <input type="email" id="email" placeholder="john@example.com"/>
-      </div>
-      <div class="form-group">
-        <label>Unit</label>
-        <select id="unitIndex"></select>
-      </div>
-      <button onclick="addTenant()">Save Tenant</button>
-    </div>
-  </section>
-
-  <!-- Record Payment -->
-  <section style="margin-top: 2rem;">
-    <h2>Record Payment</h2>
-    <div class="card">
-      <div class="form-group">
-        <label>Tenant</label>
-        <select id="tenantId"></select>
-      </div>
-      <div class="form-group">
-        <label>Amount</label>
-        <input type="number" id="amount" placeholder="5500"/>
-      </div>
-      <div class="form-group">
-        <label>Date Paid</label>
-        <input type="date" id="paymentDate" value="${new Date().toISOString().split('T')[0]}"/>
-      </div>
-      <div class="form-group">
-        <label>Month Covered</label>
-        <input type="month" id="monthPaidFor" value="${new Date().toISOString().slice(0, 7)}"/>
-      </div>
-      <div class="form-group">
-        <label>Mode of Payment</label>
-        <select id="modeOfPayment">
-          <option>Cash</option>
-          <option>M-Pesa</option>
-          <option>Bank Transfer</option>
-        </select>
-      </div>
-      <button onclick="recordPayment()">Record Payment</button>
-    </div>
-  </section>
-
-  <!-- Payments Table -->
-  <section style="margin-top: 2rem;">
-    <h2>Recent Payments</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Tenant</th>
-          <th>Amount</th>
-          <th>Date</th>
-          <th>Month</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="paymentsTable"></tbody>
-    </table>
-  </section>
-
-  <!-- Tenants List -->
-  <section style="margin-top: 2rem;">
-    <h2>All Tenants</h2>
-    <ul id="tenantList" class="tenant-list"></ul>
-  </section>
-
+<!-- Login Form -->
+<div id="loginForm" class="container" style="display:none;">
+  <h2>Admin Login</h2>
+  <div class="card">
+    <input type="email" id="loginEmail" placeholder="Email" />
+    <input type="password" id="loginPassword" placeholder="Password" />
+    <button onclick="login()">Login</button>
+  </div>
 </div>
 
-<footer>
-  ST. LOISE Property Management App • © <span id="year"></span>
-</footer>
+<!-- Main App -->
+<div id="app" style="display:none;">
+  <!-- Your full RentEase app HTML goes here -->
+  <!-- Copy the entire app HTML from earlier -->
+</div>
 
 <script>
-  const units = Array.from({ length: 17 }, (_, i) => ({
-    index: i,
-    type: i < 10 ? 'Bedsitter' : 'One-bedroom',
-    rent: i < 10 ? 5500 : 6500,
-    occupied: false
-  }));
+  // Initialize Firebase
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "your-project-id.firebaseapp.com",
+    projectId: "your-project-id",
+    storageBucket: "your-project-id.appspot.com",
+    messagingSenderId: "1234567890",
+    appId: "1:1234567890:web:abcdef123456"
+  };
 
-  let tenants = [];
-  let payments = [];
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
-  function updateDashboard() {
-    document.getElementById('totalUnits').innerText = units.length;
-    const occupied = tenants.length;
-    document.getElementById('occupiedUnits').innerText = occupied;
-    document.getElementById('vacantUnits').innerText = units.length - occupied;
+  // Check login status
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      loadData(); // Load data from Firestore
+    } else {
+      document.getElementById('loginForm').style.display = 'block';
+      document.getElementById('app').style.display = 'none';
+    }
+  });
 
-    const totalIncome = payments.reduce((sum, p) => sum + parseFloat(p.amount), 0);
-    document.getElementById('monthlyIncome').innerText = `Ksh ${totalIncome.toFixed(2)}`;
+  function login() {
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    auth.signInWithEmailAndPassword(email, password)
+      .catch(error => alert("Login failed: " + error.message));
   }
 
-  function populateUnitDropdown() {
-    const dropdown = document.getElementById('unitIndex');
-    dropdown.innerHTML = '<option value="">Select Unit</option>';
-    units.forEach(unit => {
-      if (!tenants.some(t => t.unitIndex === unit.index)) {
-        dropdown.innerHTML += `<option value="${unit.index}">Unit #${unit.index + 1} (${unit.type})</option>`;
-      }
+  function logout() {
+    auth.signOut();
+  }
+
+  let tenants = [], payments = [];
+
+  function loadData() {
+    db.collection("tenants").onSnapshot(snapshot => {
+      tenants = [];
+      snapshot.forEach(doc => tenants.push({ id: doc.id, ...doc.data() }));
+      renderTenants();
+      updateDashboard();
+      populateTenantDropdown();
+    });
+
+    db.collection("payments").onSnapshot(snapshot => {
+      payments = [];
+      snapshot.forEach(doc => payments.push({ id: doc.id, ...doc.data() }));
+      renderPayments();
+      updateDashboard();
     });
   }
 
-  function populateTenantDropdown() {
-    const dropdown = document.getElementById('tenantId');
-    dropdown.innerHTML = '<option value="">Select Tenant</option>';
-    tenants.forEach(tenant => {
-      dropdown.innerHTML += `<option value="${tenant.id}">${tenant.fullName} (Unit #${tenant.unitIndex + 1})</option>`;
-    });
+  function saveTenant(tenant) {
+    db.collection("tenants").doc(tenant.id.toString()).set(tenant);
   }
 
-  function renderTenants() {
-    const list = document.getElementById('tenantList');
-    list.innerHTML = '';
-    tenants.forEach(tenant => {
-      const balance = calculateBalance(tenant.id);
-      list.innerHTML += `
-        <li class="tenant-item">
-          <div class="tenant-info">
-            <strong>${tenant.fullName}</strong>
-            <span>ID: ${tenant.idNumber}</span>
-            <span>Phone: ${tenant.phone}</span>
-            <span>Email: ${tenant.email || 'N/A'}</span>
-            <span>Unit: Unit #${tenant.unitIndex + 1} (${units[tenant.unitIndex].type})</span>
-            <span>Balance: Ksh ${balance.toFixed(2)}</span>
-          </div>
-          <button class="remove-btn" onclick="removeTenant(${tenant.id})">Remove</button>
-        </li>
-      `;
-    });
+  function savePayment(payment) {
+    db.collection("payments").doc(payment.id.toString()).set(payment);
   }
 
-  function calculateBalance(tenantId) {
-    const tenant = tenants.find(t => t.id === tenantId);
-    const expectedRent = units[tenant.unitIndex].rent;
-    const paid = payments
-      .filter(p => p.tenantId === tenantId)
-      .reduce((sum, p) => sum + parseFloat(p.amount), 0);
-    return expectedRent - paid;
+  function removeTenantFromDB(id) {
+    db.collection("tenants").doc(id.toString()).delete();
+    db.collection("payments").where("tenantId", "==", parseInt(id)).get()
+      .then(snapshot => {
+        snapshot.forEach(doc => doc.ref.delete());
+      });
   }
 
-  function addTenant() {
+  // Replace addTenant(), recordPayment(), removeTenant() to use Firebase
+  window.addTenant = () => {
     const fullName = document.getElementById('fullName').value.trim();
     const idNumber = document.getElementById('idNumber').value.trim();
     const phone = document.getElementById('phone').value.trim();
@@ -302,7 +140,7 @@
     if (!fullName || !idNumber || !phone || isNaN(unitIndex)) return alert("Please fill all required fields.");
 
     const newTenant = {
-      id: Date.now(),
+      id: Date.now().toString(),
       fullName,
       idNumber,
       phone,
@@ -310,24 +148,12 @@
       unitIndex
     };
 
-    tenants.push(newTenant);
-    units[unitIndex].occupied = true;
+    saveTenant(newTenant);
+    clearForm();
+  };
 
-    updateDashboard();
-    populateUnitDropdown();
-    populateTenantDropdown();
-    renderTenants();
-
-    // Clear form
-    document.getElementById('fullName').value = '';
-    document.getElementById('idNumber').value = '';
-    document.getElementById('phone').value = '';
-    document.getElementById('email').value = '';
-    document.getElementById('unitIndex').value = '';
-  }
-
-  function recordPayment() {
-    const tenantId = parseInt(document.getElementById('tenantId').value);
+  window.recordPayment = () => {
+    const tenantId = document.getElementById('tenantId').value;
     const amount = document.getElementById('amount').value.trim();
     const paymentDate = document.getElementById('paymentDate').value;
     const monthPaidFor = document.getElementById('monthPaidFor').value;
@@ -336,91 +162,27 @@
     if (!tenantId || !amount) return alert("Please select tenant and enter amount.");
 
     const newPayment = {
-      id: Date.now(),
-      tenantId,
+      id: Date.now().toString(),
+      tenantId: parseInt(tenantId),
       amount,
       paymentDate,
       monthPaidFor,
       modeOfPayment
     };
 
-    payments.push(newPayment);
-    renderPayments();
+    savePayment(newPayment);
     generateReceipt(newPayment);
-    renderTenants(); // Update balances
+    clearPaymentForm();
+  };
 
-    // Reset form
-    document.getElementById('amount').value = '';
-    document.getElementById('paymentDate').value = "${new Date().toISOString().split('T')[0]}";
-    document.getElementById('monthPaidFor').value = "${new Date().toISOString().slice(0, 7)}";
-  }
+  window.removeTenant = (tenantId) => {
+    if (confirm("Are you sure you want to remove this tenant?")) {
+      removeTenantFromDB(tenantId);
+    }
+  };
 
-  function renderPayments() {
-    const tbody = document.getElementById('paymentsTable');
-    tbody.innerHTML = '';
-    payments.forEach(payment => {
-      const tenant = tenants.find(t => t.id === payment.tenantId);
-      tbody.innerHTML += `
-        <tr>
-          <td>${tenant?.fullName}</td>
-          <td>Ksh ${parseFloat(payment.amount).toFixed(2)}</td>
-          <td>${payment.paymentDate}</td>
-          <td>${payment.monthPaidFor}</td>
-          <td><button onclick="generateReceipt(${JSON.stringify(payment).replace(/"/g, '&quot;')})">Print Receipt</button></td>
-        </tr>
-      `;
-    });
-  }
-
-  async function generateReceipt(payment) {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    const tenant = tenants.find(t => t.id === payment.tenantId);
-
-    doc.setFontSize(16);
-    doc.text("RentEase", 20, 20);
-    doc.setFontSize(12);
-    doc.text("Official Rent Receipt", 20, 30);
-    doc.line(20, 35, 190, 35);
-
-    let y = 45;
-    doc.text(`Tenant: ${tenant?.fullName}`, 20, y); y += 10;
-    doc.text(`ID Number: ${tenant?.idNumber}`, 20, y); y += 10;
-    doc.text(`Phone: ${tenant?.phone}`, 20, y); y += 10;
-    doc.text(`Email: ${tenant?.email || 'N/A'}`, 20, y); y += 10;
-    doc.text(`Unit: Unit #${tenant?.unitIndex + 1}`, 20, y); y += 10;
-    doc.text(`Amount: Ksh ${parseFloat(payment.amount).toFixed(2)}`, 20, y); y += 10;
-    doc.text(`Date Paid: ${payment.paymentDate}`, 20, y); y += 10;
-    doc.text(`Month Covered: ${payment.monthPaidFor}`, 20, y); y += 10;
-    doc.text(`Mode of Payment: ${payment.modeOfPayment}`, 20, y); y += 20;
-
-    doc.setFontSize(10);
-    doc.setTextColor(150);
-    doc.text("Generated by RentEase Property Management", 20, y);
-
-    doc.save(`receipt_${tenant?.fullName}.pdf`);
-  }
-
-  function removeTenant(tenantId) {
-    const tenant = tenants.find(t => t.id === tenantId);
-    units[tenant.unitIndex].occupied = false;
-    tenants = tenants.filter(t => t.id !== tenantId);
-    payments = payments.filter(p => p.tenantId !== tenantId);
-
-    updateDashboard();
-    populateUnitDropdown();
-    populateTenantDropdown();
-    renderTenants();
-    renderPayments();
-  }
-
-  // Initial setup
-  updateDashboard();
-  populateUnitDropdown();
-  populateTenantDropdown();
-  renderTenants();
-  document.getElementById('year').innerText = new Date().getFullYear();
+  // Implement the rest of your functions using tenants/payments arrays
+  // e.g., updateDashboard(), renderTenants(), calculateBalance(), etc.
 </script>
 
 </body>
