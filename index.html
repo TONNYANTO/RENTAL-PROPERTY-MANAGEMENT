@@ -15,29 +15,7 @@
   </style>
 </head>
 <body>
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-      
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-          apiKey: "AIzaSyBEXl6GKDmnAg1FbiaKwP1UgiXz2gFTC3w",
-          authDomain: "st-loise-rental.firebaseapp.com",
-          projectId: "st-loise-rental",
-          storageBucket: "st-loise-rental.firebasestorage.app",
-          messagingSenderId: "999179801677",
-          appId: "1:999179801677:web:9e49dc4d508cb17dbef804",
-          measurementId: "G-YBXCCVWN1C"
-        };
-      
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-      </script>
+   
 
 <!-- Login Form -->
 <div id="loginForm" class="container" style="display:none;">
@@ -55,22 +33,30 @@
   <!-- Copy the entire app HTML from earlier -->
 </div>
 
-<script>
-  // Initialize Firebase
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "your-project-id.firebaseapp.com",
-    projectId: "your-project-id",
-    storageBucket: "your-project-id.appspot.com",
-    messagingSenderId: "1234567890",
-    appId: "1:1234567890:web:abcdef123456"
-  };
+<!-- Main App -->
+<div id="app" style="display:none;">
+  <!-- Your full RentEase app HTML goes here -->
+</div>
 
+<script>
+  // ✅ Firebase Configuration (Replace with your actual values)
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBEXl6GKDmnAg1FbiaKwP1UgiXz2gFTC3w",
+  authDomain: "st-loise-rental.firebaseapp.com",
+  projectId: "st-loise-rental",
+  storageBucket: "st-loise-rental.firebasestorage.app",
+  messagingSenderId: "999179801677",
+  appId: "1:999179801677:web:9e49dc4d508cb17dbef804",
+  measurementId: "G-YBXCCVWN1C"
+};
+
+  // ✅ Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // Check login status
+  // 🔐 Auth State Handler
   auth.onAuthStateChanged(user => {
     if (user) {
       document.getElementById('loginForm').style.display = 'none';
