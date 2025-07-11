@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ST. LOISE - Property Management</title>
+  <title>ST. LOUIS - Property Management</title>
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js "></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js "></script>
@@ -109,7 +109,7 @@
 <body>
 
 <header>
-  <h1>ST. LOISE</h1>
+  <h1>ST. LOUIS</h1>
   <p>Property Management System</p>
 </header>
 
@@ -240,7 +240,7 @@
 </div>
 
 <footer>
-  ST. LOISE Property Management App • © <span id="year"></span>
+  ST. LOUIS Property Management App • © <span id="year"></span>
 </footer>
 
 <script>
@@ -286,12 +286,26 @@
   let tenants = [];
   let payments = [];
 
-  const units = Array.from({ length: 17 }, (_, i) => ({
-    index: i,
-    type: i < 10 ? 'Bedsitter' : 'One-bedroom',
-    rent: i < 10 ? 5500 : 6500,
-    occupied: false
-  }));
+  // Define units with custom labels
+  const units = Array.from({ length: 17 }, (_, i) => {
+    if (i < 10) {
+      return {
+        index: i,
+        type: 'Bedsitter',
+        rent: 5500,
+        label: `M${i + 1}`,
+        occupied: false
+      };
+    } else {
+      return {
+        index: i,
+        type: 'One-bedroom',
+        rent: 6500,
+        label: `G${i - 9}`,
+        occupied: false
+      };
+    }
+  });
 
   function updateDashboard() {
     document.getElementById('totalUnits').innerText = units.length;
@@ -302,12 +316,17 @@
     document.getElementById('monthlyIncome').innerText = `Ksh ${totalIncome.toFixed(2)}`;
   }
 
+  function getUnitLabel(unitIndex) {
+    const unit = units.find(u => u.index === unitIndex);
+    return unit ? unit.label : '';
+  }
+
   function populateUnitDropdown() {
     const dropdown = document.getElementById('unitIndex');
     dropdown.innerHTML = '<option value="">Select Unit</option>';
     units.forEach(unit => {
       if (!tenants.some(t => t.unitIndex === unit.index)) {
-        dropdown.innerHTML += `<option value="${unit.index}">Unit #${unit.index + 1} (${unit.type})</option>`;
+        dropdown.innerHTML += `<option value="${unit.index}">${unit.label} (${unit.type})</option>`;
       }
     });
   }
@@ -316,10 +335,10 @@
     const dropdown = document.getElementById('tenantId');
     dropdown.innerHTML = '<option value="">Select Tenant</option>';
     tenants.forEach(tenant => {
-      const unit = units[tenant.unitIndex];
+      const unit = units.find(u => u.index === tenant.unitIndex);
       dropdown.innerHTML += `
         <option value="${tenant.id}">
-          ${tenant.fullName} - Unit #${tenant.unitIndex + 1} (${unit.type})
+          ${tenant.fullName} - ${unit.label} (${unit.type})
         </option>
       `;
     });
@@ -327,10 +346,11 @@
 
   function calculateBalance(tenantId) {
     const tenant = tenants.find(t => t.id === tenantId);
-    const expectedRent = units[tenant?.unitIndex]?.rent || 0;
+    const expectedRent = units.find(u => u.index === tenant.unitIndex)?.rent || 0;
     const paid = payments
       .filter(p => p.tenantId === tenantId)
       .reduce((sum, p) => sum + parseFloat(p.amount), 0);
+
     return expectedRent - paid;
   }
 
@@ -338,6 +358,7 @@
     const list = document.getElementById('tenantList');
     list.innerHTML = '';
     tenants.forEach(tenant => {
+      const unit = units.find(u => u.index === tenant.unitIndex);
       const balance = calculateBalance(tenant.id);
       list.innerHTML += `
         <li class="tenant-item">
@@ -346,10 +367,10 @@
             <span>ID: ${tenant.idNumber}</span>
             <span>Phone: ${tenant.phone}</span>
             <span>Email: ${tenant.email || 'N/A'}</span>
-            <span>Unit: Unit #${tenant.unitIndex + 1} (${units[tenant.unitIndex].type})</span>
+            <span>Unit: ${unit.label} (${unit.type})</span>
             <span>Balance: Ksh ${balance.toFixed(2)}</span>
           </div>
-          <button class="remove-btn" onclick="removeTenant(${tenant.id})">Remove</button>
+          <button class="remove-btn" onclick="removeTenant('${tenant.id}')">Remove</button>
         </li>
       `;
     });
@@ -360,9 +381,12 @@
     tbody.innerHTML = '';
     payments.forEach(payment => {
       const tenant = tenants.find(t => t.id === payment.tenantId);
+      if (!tenant) return;
+      const unit = units.find(u => u.index === tenant.unitIndex);
       tbody.innerHTML += `
         <tr>
           <td>${tenant?.fullName}</td>
+          <td>${unit.label} (${unit.type})</td>
           <td>Ksh ${parseFloat(payment.amount).toFixed(2)}</td>
           <td>${payment.paymentDate}</td>
           <td>${payment.monthPaidFor}</td>
@@ -375,10 +399,13 @@
   async function generateReceipt(payment) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
+
     const tenant = tenants.find(t => t.id === payment.tenantId);
+    const unit = units.find(u => u.index === tenant.unitIndex);
+    const balance = calculateBalance(tenant.id);
 
     doc.setFontSize(16);
-    doc.text("RentEase", 20, 20);
+    doc.text("ST. LOUIS", 20, 20);
     doc.setFontSize(12);
     doc.text("Official Rent Receipt", 20, 30);
     doc.line(20, 35, 190, 35);
@@ -388,22 +415,30 @@
     doc.text(`ID Number: ${tenant?.idNumber}`, 20, y); y += 10;
     doc.text(`Phone: ${tenant?.phone}`, 20, y); y += 10;
     doc.text(`Email: ${tenant?.email || 'N/A'}`, 20, y); y += 10;
-    doc.text(`Unit: Unit #${tenant?.unitIndex + 1}`, 20, y); y += 10;
+    doc.text(`Unit: ${unit.label} (${unit.type})`, 20, y); y += 10;
     doc.text(`Amount: Ksh ${parseFloat(payment.amount).toFixed(2)}`, 20, y); y += 10;
     doc.text(`Date Paid: ${payment.paymentDate}`, 20, y); y += 10;
     doc.text(`Month Covered: ${payment.monthPaidFor}`, 20, y); y += 10;
-    doc.text(`Mode of Payment: ${payment.modeOfPayment}`, 20, y); y += 20;
+    doc.text(`Mode of Payment: ${payment.modeOfPayment}`, 20, y); y += 10;
 
+    if (balance > 0) {
+      doc.text(`Remaining Balance: Ksh ${balance.toFixed(2)}`, 20, y); y += 10;
+    } else {
+      doc.text(`Status: Cleared`, 20, y); y += 10;
+    }
+
+    y += 10;
     doc.setFontSize(10);
     doc.setTextColor(150);
-    doc.text("Generated by RentEase Property Management", 20, y);
+    doc.text("Generated by ST. LOUIS Property Management", 20, y);
 
     doc.save(`receipt_${tenant?.fullName}.pdf`);
   }
 
   function removeTenant(tenantId) {
     const tenant = tenants.find(t => t.id === tenantId);
-    units[tenant.unitIndex].occupied = false;
+    const unit = units.find(u => u.index === tenant.unitIndex);
+    unit.occupied = false;
     tenants = tenants.filter(t => t.id !== tenantId);
     payments = payments.filter(p => p.tenantId !== tenantId);
     updateDashboard();
@@ -426,7 +461,7 @@
     }
 
     const newTenant = {
-      id: Date.now(),
+      id: Date.now().toString(),
       fullName,
       idNumber,
       phone,
@@ -434,24 +469,12 @@
       unitIndex
     };
 
-    tenants.push(newTenant);
-    units[unitIndex].occupied = true;
-
-    updateDashboard();
-    populateUnitDropdown();
-    populateTenantDropdown();
-    renderTenants();
-
-    // Clear form
-    document.getElementById('fullName').value = '';
-    document.getElementById('idNumber').value = '';
-    document.getElementById('phone').value = '';
-    document.getElementById('email').value = '';
-    document.getElementById('unitIndex').value = '';
+    // Save to Firebase
+    db.collection("tenants").doc(newTenant.id).set(newTenant);
   }
 
   function recordPayment() {
-    const tenantId = parseInt(document.getElementById('tenantId').value);
+    const tenantId = document.getElementById('tenantId').value;
     const amount = document.getElementById('amount').value.trim();
     const paymentDate = document.getElementById('paymentDate').value;
     const monthPaidFor = document.getElementById('monthPaidFor').value;
@@ -463,23 +486,16 @@
     }
 
     const newPayment = {
-      id: Date.now(),
-      tenantId,
+      id: Date.now().toString(),
+      tenantId: parseInt(tenantId),
       amount,
       paymentDate,
       monthPaidFor,
       modeOfPayment
     };
 
-    payments.push(newPayment);
-    renderPayments();
-    generateReceipt(newPayment);
-    renderTenants(); // Update balances
-
-    // Reset form
-    document.getElementById('amount').value = '';
-    document.getElementById('paymentDate').value = "${new Date().toISOString().split('T')[0]}";
-    document.getElementById('monthPaidFor').value = "${new Date().toISOString().slice(0, 7)}";
+    // Save to Firebase
+    db.collection("payments").doc(newPayment.id).set(newPayment);
   }
 
   function loadData() {
